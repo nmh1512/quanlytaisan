@@ -15,7 +15,13 @@
     }
   }
 }
-
+.user-panel i.fa-power-off {
+  margin-left: auto;
+  margin-right: 5px;
+  display: flex;
+  align-items: center;
+  color: #ffffff;
+}
 .sidebar {
   height: calc(100% - (#{$main-header-height-inner} + #{$main-header-bottom-border-width}));
   overflow-x: hidden;

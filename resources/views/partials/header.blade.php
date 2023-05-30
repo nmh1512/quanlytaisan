@@ -19,8 +19,10 @@
         href="{{ asset('home/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css') }}">
     <!-- iCheck -->
 
+    <link rel="stylesheet" href="{{ asset('home/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('home/plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('home/plugins/datatables-buttons/css/buttons.bootstrap4.min.css') }}">
     @yield('css')
-
 
     <link rel="stylesheet" href="{{ asset('home/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
     <!-- JQVMap -->
@@ -33,5 +35,7 @@
     <link rel="stylesheet" href="{{ asset('home/plugins/daterangepicker/daterangepicker.css') }}">
     <!-- summernote -->
     <link rel="stylesheet" href="{{ asset('home/plugins/summernote/summernote-bs4.min.css') }}">
+
+    
 
 </head>

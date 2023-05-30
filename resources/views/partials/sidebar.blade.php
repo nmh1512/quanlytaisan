@@ -202,11 +202,40 @@
                         </p>
                     </a>
                 </li>
+                <li class="nav-header">DANH MỤC</li>
                 <li class="nav-item">
                     <a href="{{ route('category_assets') }}" class="nav-link">
                         <i class="nav-icon fas fa-th"></i>
                         <p>
-                            Danh mục loại tài sản
+                            Loại tài sản
+                            {{-- <span class="right badge badge-danger">New</span> --}}
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('type_assets') }}" class="nav-link">
+                        <i class="nav-icon fas fa-th"></i>
+                        <p>
+                            Chủng loại tài sản
+                            {{-- <span class="right badge badge-danger">New</span> --}}
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('suppliers') }}" class="nav-link">
+                        <i class="nav-icon fas fa-th"></i>
+                        <p>
+                            Nhà cung cấp
+                            {{-- <span class="right badge badge-danger">New</span> --}}
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-header">ĐƠN ĐẶT HÀNG</li>
+                <li class="nav-item">
+                    <a href="{{ route('orders') }}" class="nav-link">
+                        <i class="nav-icon fas fa-clipboard-list"></i>
+                        <p>
+                            Đơn đặt hàng
                             {{-- <span class="right badge badge-danger">New</span> --}}
                         </p>
                     </a>

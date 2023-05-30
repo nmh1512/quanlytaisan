@@ -5,26 +5,30 @@ namespace App\View\Components;
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
-use Illuminate\Http\Request; 
 
-class ModalCenter extends Component
+class FormCategoryAssets extends Component
 {
     /**
      * Create a new component instance.
      */
     public $title;
+    public $data;
 
-    public function __construct($title)
+    public function __construct($title, $data)
     {
         //
         $this->title = $title;
+        $this->data = $data;
     }
 
-    /** 
+    /**
      * Get the view / contents that represent the component.
      */
     public function render(): View|Closure|string
     {
-        return view('components.modal-center');
+        return view('components.form-category-assets', [
+            'title' => $this->title,
+            'data' => $this->data
+        ]);
     }
 }

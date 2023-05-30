@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CategoryAssetsRequest extends FormRequest
+class SupplierRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,13 +23,14 @@ class CategoryAssetsRequest extends FormRequest
     {
         return [
             //
-            'name' => 'required|max:255',
+            'name' => 'required|max:255'
         ];
     }
     public function messages(): array
     {
         return [
-            'name.required' => 'Vui lòng nhập tên loại tài sản',
+            //
+            'name.required' => 'Vui lòng nhập tên nhà cung cấp',
             'name.max' => 'Giới hạn :max ký tự'
         ];
     }

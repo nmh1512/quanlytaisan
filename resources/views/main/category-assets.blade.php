@@ -1,7 +1,8 @@
 @extends('layouts.master')
 
 @section('css')
-  <link rel="stylesheet" href="{{ asset('home/plugins/toastr/toastr.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('main/css/plugins/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('home/plugins/toastr/toastr.min.css') }}">
 @endsection
 
 @section('content')
@@ -29,7 +30,8 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-12">
-                        <button data-href="{{ route('category_assets_create') }}" title="Thêm" type="button" class="btn btn-primary float-right mb-3" data-toggle="modal" data-modal-type="add"
+                        <button data-href="{{ route('category_assets_create') }}" title="Thêm" type="button"
+                            class="btn btn-primary float-right mb-3" data-toggle="modal" data-modal-type="add"
                             data-target="#modalCenter">
                             <i class="fas fa-plus" style="color: #ffffff;"></i></i> Thêm mới
                         </button>
@@ -37,8 +39,19 @@
                     <div class="col-12">
                         <div class="card">
                             <!-- /.card-header -->
-                            <div id="table-category-assets" class="card-body">
-                                {!! $table !!}
+                            <div class="card-body">
+                                <table id="data-table" class="table table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Tên loại tài sản</th>
+                                            <th>Người tạo</th>
+                                            <th>Ngày tạo</th>
+                                            <th>Ngày cập nhật</th>
+                                            <th>Thao tác</th>
+                                        </tr>
+                                    </thead>
+                                </table>
                             </div>
 
                             <!-- /.card-body -->
@@ -51,11 +64,12 @@
         </section>
         <!-- /.content -->
     </div>
-       <!-- Form 1 -->
-    <x-modal-center></x-modal-center>
-    
+    <!-- Form 1 -->
+    <x-modal-center :title="'Loại tài sản'"></x-modal-center>
 @endsection
 @section('js')
-<script src="{{ asset('home/plugins/toastr/toastr.min.js') }}"></script>
-<script src="{{ asset('main/js/category_assets.js') }}"></script>
+    @routes()
+    <script src="{{ asset('main/js/plugins/select2.min.js') }}"></script>
+    <script src="{{ asset('home/plugins/toastr/toastr.min.js') }}"></script>
+    <script src="{{ asset('main/js/app.js') }}"></script>
 @endsection

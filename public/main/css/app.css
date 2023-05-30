@@ -1,0 +1,79 @@
+/* #formData {
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 16px;
+}
+#formData .form-group {
+    margin-bottom: 0;
+} */
+#formData {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+#formData .form-group {
+    margin-bottom: 10px;
+}
+
+.is-invalid + .select2-container--bootstrap .select2-selection--single {
+    border: 1px solid #f44336;
+}
+form .select2-container .select2-selection--single {
+    height: 38px;
+    font-size: 16px;
+}
+form
+    .select2-container
+    .select2-selection--single
+    .select2-selection__rendered {
+    padding-left: 0;
+}
+.error-alert {
+    font-size: 14px;
+}
+.upload-btn-wrapper {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+    border: 2px solid gray;
+    border-radius: 8px;
+}
+
+.upload-btn-wrapper .btn {
+    color: gray;
+    background-color: white;
+    padding: 8px 15x;
+    font-size: 16px;
+    font-weight: bold;
+    width: 100%;
+}
+
+.upload-btn-wrapper input[type="file"] {
+    font-size: 100px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+}
+.image_preview {
+    position: relative;
+}
+.image_preview i {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+}
+.btn-action {
+    width: 35px;
+    height: 35px;
+}
+@media screen and (max-width: 480px) {
+    #formData {
+        display: block;
+    }
+    .btn-action {
+        width: 20px;
+        height: 20px;
+    }
+}

@@ -5,16 +5,28 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Foundation\Auth\User;
 
-class CategoryAssets extends Model
+class TypeAssets extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['name', 'user_create'];
+    protected $fillable = [
+        'name',
+        'category_asset_id',
+        'model',
+        'brand',
+        'year_create',
+        'unit',
+        'image',
+        'user_create'
+    ];
 
-    public function userCreated() {
+    public function userCreate() {
         return $this->belongsTo(User::class, 'user_create');
+    }
+
+    public function categoryAsset() {
+        return $this->belongsTo(CategoryAssets::class, 'category_asset_id');
     }
 
     public function getCreatedAtAttribute() {

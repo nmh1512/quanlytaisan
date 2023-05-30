@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CategoryAssetsRequest;
 use App\Models\CategoryAssets;
+use App\Models\User;
 use App\Traits\QueryableTrait;
 use Exception;
 use Illuminate\Http\Request;
@@ -11,7 +12,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\View\View;
+use DataTables;
 
 class CategoryAssetsController extends Controller
 {
@@ -23,16 +24,14 @@ class CategoryAssetsController extends Controller
     {
         $this->categoryAssets = $categoryAssets;
     }
-    public function index(): View
+    public function index(Request $request)
     {
-
-        $itemPerPage = 20;
-        $categoryAssetsList = $this->getDataAccess($this->categoryAssets, 'userCreated', $itemPerPage);
-
+        if($request->ajax()) {
+            $data = $this->categoryAssets->with('userCreated');
+            return DataTables::of($data)->make(true);
+        }
         // render data vào bảng danh mục
-        $table = view('render.table-category-assets', compact('categoryAssetsList'))->render();
-
-        return view('category_assets.index', compact('table'));
+        return view('main.category-assets');
     }
 
     public function create(CategoryAssetsRequest $request)
@@ -41,21 +40,19 @@ class CategoryAssetsController extends Controller
             DB::beginTransaction();
 
             $dataInsert = [
-                'name' => $request->category_asset_name,
+                'name' => $request->name,
                 'user_create' => Auth::user()->id
             ];
             $this->categoryAssets->create($dataInsert);
 
             DB::commit();
 
-            $itemPerPage = 20;
-            $categoryAssetsList = $this->getDataAccess($this->categoryAssets, 'userCreated', $itemPerPage);
             //render lai table
-            $tableReRender = view('render.table-category-assets', compact('categoryAssetsList'))->render();
+            // $tableReRender = $this->reRenderData();
 
             return response()->json([
                 'status' => 'success',
-                'table' => $tableReRender
+                // 'table' => $tableReRender
             ]);
         } catch (Exception $e) {
             DB::rollBack();
@@ -73,20 +70,18 @@ class CategoryAssetsController extends Controller
             DB::beginTransaction();
 
             $dataUpdate = [
-                'name' => $request->category_asset_name,
+                'name' => $request->name,
             ];
             $this->categoryAssets->find($id)->update($dataUpdate);
 
             DB::commit();
 
-            $itemPerPage = 20;
-            $categoryAssetsList = $this->getDataAccess($this->categoryAssets, 'userCreated', $itemPerPage);
             //render lai table
-            $tableReRender = view('render.table-category-assets', compact('categoryAssetsList'))->render();
+            // $tableReRender = $this->reRenderData();
 
             return response()->json([
                 'status' => 'success',
-                'table' => $tableReRender
+                // 'table' => $tableReRender
             ]);
         } catch (Exception $e) {
             DB::rollBack();
@@ -97,4 +92,9 @@ class CategoryAssetsController extends Controller
             ], 500);
         }
     }
+
+    public function delete($id) {
+        return $this->deleteData($this->categoryAssets, $id);
+    }
+   
 }

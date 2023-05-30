@@ -35,6 +35,16 @@
 </script>
 <!-- Bootstrap 4 -->
 <script src="{{ asset('home/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+
+<!-- DataTables  & Plugins -->
+
+<script src="{{ asset('home/plugins/datatables/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('home/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
+<script src="{{ asset('home/plugins/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
+<script src="{{ asset('home/plugins/datatables-responsive/js/responsive.bootstrap4.min.js') }}"></script>
+<script src="{{ asset('home/plugins/datatables-buttons/js/dataTables.buttons.min.js') }}"></script>
+<script src="{{ asset('home/plugins/datatables-buttons/js/buttons.bootstrap4.min.js') }}"></script>
+
 <!-- ChartJS -->
 <script src="{{ asset('home/plugins/chart.js/Chart.min.js') }}"></script>
 <!-- Sparkline -->

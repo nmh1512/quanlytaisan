@@ -2,13 +2,15 @@
 
 namespace App\Models;
 
+use App\Traits\HasUserCreatedTrait;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class TypeAssets extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, HasUserCreatedTrait;
 
     protected $fillable = [
         'name',
@@ -21,18 +23,17 @@ class TypeAssets extends Model
         'user_create'
     ];
 
-    public function userCreate() {
-        return $this->belongsTo(User::class, 'user_create');
-    }
-
     public function categoryAsset() {
         return $this->belongsTo(CategoryAssets::class, 'category_asset_id');
     }
 
-    public function getCreatedAtAttribute() {
-        return date('H:i:s, d/m/Y', strtotime($this->attributes['created_at']));
+    public function getCreatedAtAttribute()
+    {
+        return Carbon::parse($this->attributes['created_at'])->format('H:i:s, d/m/Y');
     }
-    public function getUpdateAtAttribute() {
-        return date('H:i:s, d/m/Y', strtotime($this->attributes['update_at']));
+    public function getUpdatedAtAttribute()
+    {
+        return Carbon::parse($this->attributes['updated_at'])->format('H:i:s, d/m/Y');
     }
+   
 }

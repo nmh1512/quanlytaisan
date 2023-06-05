@@ -28,7 +28,9 @@ class CategoryAssetsController extends Controller
     {
         if($request->ajax()) {
             $data = $this->categoryAssets->with('userCreated');
-            return DataTables::of($data)->make(true);
+            return DataTables::of($data)
+                    ->addColumn('actions', ['edit', 'delete'])
+                    ->make(true);
         }
         // render data vào bảng danh mục
         return view('main.category-assets');

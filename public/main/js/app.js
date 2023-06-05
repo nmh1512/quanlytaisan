@@ -71,7 +71,7 @@ $(document).ready(function () {
                 responsivePriority: 2,
             },
             {
-                data: "user_create.name",
+                data: "user_created.name",
                 name: "user_create",
                 responsivePriority: 3,
             },
@@ -111,10 +111,103 @@ $(document).ready(function () {
             {
                 data: "representative",
                 name: "representative",
-            }
-        ]
+            },
+        ],
+        orders: [
+            {
+                data: "id",
+                name: "id",
+            },
+            {
+                data: "code",
+                name: "code",
+            },
+            {
+                data: "supplier.name",
+                name: "supplier_id",
+            },
+            {
+                data: "formatted_order_date",   
+                name: "order_date",
+            },
+            {
+                data: "formatted_delivery_date",
+                name: "delivery_date",
+            },
+            {
+                data: "delivery_address",
+                name: "delivery_address",
+            },
+            {
+                data: "payment_method_text",
+                name: "payment_methods",
+            },
+            {
+                data: "user_created.name",
+                name: "user_create",
+            },
+            {
+                data: "created_at",
+                name: "created_at",
+            },
+        ],
+        users: [
+            {
+                data: "id",
+                name: "id",
+            },
+            {
+                data: "name",
+                name: "name",
+            },
+            {
+                data: "email",
+                name: "email",
+            },
+            {
+                data: "created_at",
+                name: "created_at",
+            },
+            {
+                data: "updated_at",
+                name: "updated_at",
+            },
+            {
+                data: null,
+                name: "status",
+                render: function (data) {
+                    let color = 'success';
+                    let text = 'Hoạt động';
+                    if(data.status == 0) {
+                        color = 'danger';
+                        text = 'Vô hiệu hóa';
+                    }
+                    return `
+                        <p class="text-${color}">${text}</p>
+                    `;
+                },
+            },
+        ],
+        roles: [
+            {
+                data: "id",
+                name: "id",
+            },
+            {
+                data: "name",
+                name: "name",
+            },
+            {
+                data: "created_at",
+                name: "created_at",
+            },
+            {
+                data: "updated_at",
+                name: "updated_at",
+            },
+        ],
     };
-    console.log(columnsData);
+
     var currentRoute = route().current();
     var table = $("#data-table").DataTable({
         processing: true,
@@ -128,17 +221,7 @@ $(document).ready(function () {
                 searchable: false,
                 responsivePriority: 1,
                 render: function (data, type, row) {
-                    let routeEdit = route(`${currentRoute}_edit`, data.id);
-                    let routeDelete = route(`${currentRoute}_delete`, data.id);
-                    return `
-                <button data-href="${routeEdit}" data-id="${data.id}" title="Sửa" type="button" class="btn btn-primary btn-sm m-1 btn-action" data-toggle="modal" data-target="#modalCenter">
-                    <i class="far fas fa-edit"></i>
-                </button>
-                
-                <button data-href="${routeDelete}" data-id="${data.id}" title="Xóa" type="button" class="btn btn-danger btn-sm m-1 btn-action" data-toggle="modal" data-target="#modalCenter">
-                    <i class="far fa-trash-alt"></i>
-                </button>
-            `;
+                    return getActionButtons(data);
                 },
             },
         ],
@@ -170,44 +253,81 @@ $(document).ready(function () {
         $(this).siblings(".error-alert").empty();
     });
     $("#modalCenter").on("show.bs.modal", function (event) {
-
         var button = $(event.relatedTarget);
         modalTitle = button.attr("title");
-        // var nameEdit = button.parents("tr").children("td:nth-child(2)").text();
-        var id = button.attr('data-id') // lay id cua ban ghi
-        var urlRequest = button.data("href");
-
+        var id = button.attr("data-id"); // lay id cua ban ghi
+        var urlRequest = button.attr("data-href"); 
+        var action = button.attr("data-action")
+        
         var modal = $(this);
-        modal.find('.modal-body').empty()
+        modal.find(".modal-body").empty();
         modal.find("#submit").attr({
             "data-href": urlRequest,
             title: modalTitle,
         });
         modal.find("span.title").text(modalTitle);
-        // modal.find("#category_asset_name").val(nameEdit);
 
         if (modalTitle == "Xóa") {
-            $("#modalCenter").find("form").hide();
-            $(".delete-text").show();
-            // $(".name-delete").text(nameEdit);
+            $("#modalCenter").find(".size-lg").removeClass("modal-lg");
+            $("#modalCenter").find(".size-hg").removeClass("modal-hg");
+
         } else {
-            $("#modalCenter").find("form").show();
-            $(".delete-text").hide();
+            $("#modalCenter").find(".size-lg").addClass("modal-lg");
+            $("#modalCenter").find(".size-hg").addClass("modal-hg");
+
         }
         setTimeout(() => {
-            let data = { referrer: currentRoute };
+            let data = { 
+                referrer: currentRoute,
+                action: action
+             };
             if (id != "") {
                 data.id = id;
             }
-            if(modalTitle == 'Xóa') {
-                data.action = 'delete';
-            }
+           
             $.get(route("form-data"), data)
-                .done(function(response) {
+                .done(function (response) {
                     modal.find(".modal-body").html(response.data);
-                    $('form select.form-control').select2({theme:"bootstrap"})
+                    $("form select.form-control").select2({
+                        theme: "bootstrap",
+                    });
+                    if ($('select[multiple="multiple"]').length) {
+                        // js cua orders
+                        $('select[multiple="multiple"]').multiselect({
+                            disable: true,
+                            selectAllText: " Chọn tất cả",
+                            enableFiltering: true,
+                            filterPlaceholder: "Tìm kiếm",
+                            allSelectedText: "Đã chọn",
+                            buttonWidth: "100%",
+                            buttonTextAlignment: "left",
+                            onChange: function (option, checked) {
+                                if(checked) {
+                                    let id = $('.list_assets tbody tr').length
+                                    let categoryAsset = $('#category_assets option:selected').text()
+                                    let td = `<tr data-id="${ option[0].value }">
+                                                <td>${ id + 1 }</td>
+                                                <td>${ option[0].text } <input type="hidden" name="type_asset_id[]" value="${ option[0].value }"/></td>
+                                                <td>${ categoryAsset }</td>
+                                                <td>${ option[0].dataset.unit }</td>
+                                                <td><input type="tel" name="price[]" class="form-control" placeholder="Nhập đơn giá"/> 
+                                                    <span id="error-price${id}" class="text-danger font-italic error-alert"></span>
+                                                </td>
+                                                <td><input type="tel" name="quantity[]" class="form-control" placeholder="Nhập số lượng"/>
+                                                    <span id="error-quantity${id}" class="text-danger font-italic error-alert"></span>
+                                                </td>
+                                                <td class="text-center"><i id="remove${ option[0].value }" class="fas fa-times"></i></td>
+                                            </tr>`;
+                                    $('.list_assets tbody').append(td)
+                                    $('#error-type_asset_id').empty()
+                                } else {
+                                    $('i#remove' + option[0].value).click(); // remove khi bo chon trong selects
+                                }
+                            },
+                        });
+                    }
                 })
-                .fail(function() {
+                .fail(function () {
                     toastr.error("Đã có lỗi xảy ra");
                 });
         }, 500);
@@ -217,8 +337,8 @@ $(document).ready(function () {
         e.preventDefault();
         if (!isRequest) {
             let $this = $(this);
-            isRequest = true;
-            $this.prop("disabled", true);
+            // isRequest = true;
+            // $this.prop("disabled", true);
 
             let urlRequest = $this.attr("data-href");
             let csrfToken = $('meta[name="csrf-token"]').attr("content");
@@ -249,13 +369,19 @@ $(document).ready(function () {
                     }
                 },
                 error: function (response) {
-                    if (response.status == "error") {
+                    if (response.status == 500) {
                         toastr.error("Đã có lỗi xảy ra");
                     } else {
                         let errors = response.responseJSON.errors;
-                        for(feild in errors) {
-                            $(`#error-${feild}`).text(errors[feild]);
-                            $(`[name="${feild}"]`).addClass("is-invalid");
+                        for (feild in errors) {
+                            let feildHtml = feild.replace('.','');
+                            $(`#error-${feildHtml}`).text(errors[feild]);
+                            if(feild.includes('.')) {
+                                $(`#error-${feildHtml}`).siblings(`input`).addClass("is-invalid");
+                            } else {
+                                $(`[name="${feildHtml}"]`).addClass("is-invalid");
+
+                            }
                         }
                     }
                 },
@@ -267,22 +393,26 @@ $(document).ready(function () {
         }
     });
 
-    let imagePreview
-    $(document).on('change', '.input-file-container input[type="file"]', function() {
-        let file = this.files[0];
-        imagePreview = URL.createObjectURL(file);
-        $('.input-file-container').hide()
-        $('.image_preview img').attr('src', imagePreview)
-        $('.image_preview').show()
-    })
-    $(document).on('click', '.image_preview i', function () {
-        $('.input-file-container input[type="file"]').val('');
-        $('.input-file-container').show()
-        $('.image_preview').hide()
-        $('.image_preview img').attr('src', '');
-        $('#image_old').val('');
+    let imagePreview;
+    $(document).on(
+        "change",
+        '.input-file-container input[type="file"]',
+        function () {
+            let file = this.files[0];
+            imagePreview = URL.createObjectURL(file);
+            $(".input-file-container").hide();
+            $(".image_preview img").attr("src", imagePreview);
+            $(".image_preview").show();
+        }
+    );
+    $(document).on("click", ".image_preview i", function () {
+        $('.input-file-container input[type="file"]').val("");
+        $(".input-file-container").show();
+        $(".image_preview").hide();
+        $(".image_preview img").attr("src", "");
+        $("#image_old").val("");
         URL.revokeObjectURL(imagePreview);
-    })
+    });
 
     $(document).on("keypress", "input[type='tel']", function (event) {
         var character = String.fromCharCode(event.keyCode);

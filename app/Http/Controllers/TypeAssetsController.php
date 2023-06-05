@@ -25,10 +25,11 @@ class TypeAssetsController extends Controller
     }
     public function index(Request $request)
     {
-
         if ($request->ajax()) {
             $data = $this->typeAssets;
-            return DataTables::of($data->with(['userCreate', 'categoryAsset']))->make(true);
+            return DataTables::of($data->with(['userCreated', 'categoryAsset']))
+                    ->addColumn('actions', ['edit', 'delete'])
+                    ->make(true);
         }
 
         return view('main.type-assets');

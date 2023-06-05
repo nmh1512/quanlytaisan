@@ -13,7 +13,7 @@ trait QueryableTrait
     public function deleteData($model, $id) {
         try {
             DB::beginTransaction();
-            $model->find($id)->delete();
+            $model->findOrFail($id)->delete();
             DB::commit();
 
             return response()->json([

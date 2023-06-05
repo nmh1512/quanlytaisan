@@ -68,7 +68,6 @@
     <x-modal-center :title="'Loại tài sản'"></x-modal-center>
 @endsection
 @section('js')
-    @routes()
     <script src="{{ asset('main/js/plugins/select2.min.js') }}"></script>
     <script src="{{ asset('home/plugins/toastr/toastr.min.js') }}"></script>
     <script src="{{ asset('main/js/app.js') }}"></script>

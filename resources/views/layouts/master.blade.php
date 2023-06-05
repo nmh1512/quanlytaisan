@@ -69,5 +69,6 @@
 <script src="{{ asset('home/dist/js/demo.js') }}"></script>
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <script src="{{ asset('home/dist/js/pages/dashboard.js') }}"></script>
-
+@routes()
+<script src="{{ asset('main/js/helper.js') }}"></script>
 @yield('js')

@@ -72,7 +72,7 @@
         <!-- /.content -->
     </div>
     <!-- Form 1 -->
-    <x-modal-center :title="'Chủng loại tài sản'"></x-modal-center>
+    <x-modal-center :title="'Chủng loại tài sản'" :size="'size-lg'"></x-modal-center>
 @endsection
 @section('js')
     @routes()

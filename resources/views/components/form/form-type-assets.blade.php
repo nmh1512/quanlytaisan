@@ -1,4 +1,3 @@
-<form id="formData" onsubmit="return false">
     <div class="form-group">
         <label>Tên chủng loại tài sản <span class="text-danger">*</span></label>
         <input type="text" class="form-control" name="name" value="{{ $data->name ?? '' }}"
@@ -9,7 +8,7 @@
         <label for="category_asset_id">Loại tài sản <span class="text-danger">*</span></label>
         <select class="form-control" id="category-asset" name="category_asset_id" data-placeholder="Chọn loại tài sản">
             <option></option>
-            @foreach ($categoryAssets as $item)
+            @foreach ($selects['categoryAssets']() as $item)
                 <option {{ !empty($data) && $data->category_asset_id == $item->id ? 'selected' : '' }}
                     value="{{ $item->id }}">{{ $item->name }}</option>
             @endforeach
@@ -31,7 +30,7 @@
         <label for="year">Năm sản xuất <span class="text-danger">*</span></label>
         <select class="form-control" id="year" name="year" data-placeholder="Chọn năm sản xuất">
             <option></option>
-            @foreach ($years as $year)
+            @foreach ($selects['years'] as $year)
                 <option {{ !empty($data) && $data->year_create == $year ? 'selected' : '' }}
                     value="{{ $year }}">{{ $year }}</option>
             @endforeach
@@ -44,7 +43,7 @@
             placeholder="Nhập đơn vị tính">
         <span id="error-unit" class="text-danger font-italic error-alert"></span>
     </div>
-    
+
     <div class="form-group upload-btn-wrapper">
         <div class="image_preview" style="display: {{ !empty($data->image) ? 'block' : 'none' }}">
             <img src="{{ !empty($data) ? $data->image : '' }}" alt="Preview" class="w-100">
@@ -56,4 +55,3 @@
         </div>
         <input id="image_old" type="hidden" name="image_old" value="{{ $data->image ?? '' }}">
     </div>
-</form>

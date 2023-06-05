@@ -1,11 +1,12 @@
 <?php
 
-use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\CategoryAssetsController;
 use App\Http\Controllers\DataController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\TypeAssetsController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -60,16 +61,41 @@ Route::middleware('auth')->group(function() {
     Route::post('/suppliers-delete/{id}', [SupplierController::class, 'delete'])->name('suppliers_delete');
 
     //supplier Routes
-    Route::get('/orders', [OrderController::class, 'index'])->name('orders');
+    // Route::get('/orders', [OrderController::class, 'index'])->name('orders');
 
-    Route::post('/orders-create', [OrderController::class, 'create'])->name('orders_create');
+    // Route::post('/orders-create', [OrderController::class, 'create'])->name('orders_create');
 
-    Route::post('/orders-edit/{id}', [OrderController::class, 'update'])->name('orders_edit');
+    // Route::post('/orders-edit/{id}', [OrderController::class, 'update'])->name('orders_edit');
 
-    Route::post('/orders-delete/{id}', [OrderController::class, 'delete'])->name('orders_delete');
+    // Route::post('/orders-delete/{id}', [OrderController::class, 'delete'])->name('orders_delete');
+    Route::resource('orders', OrderController::class)->except(['create', 'edit'])->names([
+        'index' => 'orders',
+        'store' => 'orders_create',
+        'update' => 'orders_edit',
+        'destroy' => 'orders_delete',
+    ]);
+    //user Routes
+    Route::get('/users', [UserController::class, 'index'])->name('users');
 
+    Route::post('/users-create', [UserController::class, 'create'])->name('users_create');
+
+    Route::post('/users-disable/{id}', [UserController::class, 'disable'])->name('users_disable');
+
+    Route::post('/users-delete/{id}', [UserController::class, 'delete'])->name('users_delete');
+
+     //potitions Routes
+     Route::get('/roles', [RoleController::class, 'index'])->name('roles');
+
+     Route::post('/roles-create', [RoleController::class, 'create'])->name('roles_create');
+ 
+     Route::post('/roles-edit/{id}', [RoleController::class, 'edit'])->name('roles_edit');
+ 
+     Route::post('/roles-delete/{id}', [RoleController::class, 'delete'])->name('roles_delete');
 
     //route get data
     Route::get('/get-form-data', [DataController::class, 'formData'])->name('form-data');
+
+    Route::get('/get-type-assets/{category_asset_id}', [DataController::class, 'getTypeAssets'])->name('get-type-assets');
+
 });
 

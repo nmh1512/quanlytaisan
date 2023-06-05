@@ -11,7 +11,9 @@
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
 }
-
+#formData.three-row {
+    grid-template-columns: repeat(3, 1fr);
+}
 #formData .form-group {
     margin-bottom: 10px;
 }
@@ -68,6 +70,31 @@ form
     width: 35px;
     height: 35px;
 }
+.select_asset {
+    gap: 10px;
+    display: flex;
+}
+.select_asset > * {
+    width: 50%;
+}
+
+.list_assets .fa-times {
+    color: #ff0000;
+    cursor: pointer;
+}
+.ui-multiselect-menu {
+    z-index: 1050;
+}
+.form-group label {
+    width: 100%;
+}
+.modal-hg {
+    min-width: 1200px;
+    max-width: 1200px;
+}
+table.dataTable > tbody > tr.child span.dtr-title {
+    width: 200px;
+}
 @media screen and (max-width: 480px) {
     #formData {
         display: block;
@@ -75,5 +102,8 @@ form
     .btn-action {
         width: 20px;
         height: 20px;
+    }
+    table.dataTable > tbody > tr.child span.dtr-title {
+        width: 20%;
     }
 }

@@ -1,4 +1,3 @@
-<form id="formData" onsubmit="return false">
     <div class="form-group">
         <label>Tên nhà cung cấp <span class="text-danger">*</span></label>
         <input type="text" class="form-control" name="name" value="{{ $data->name ?? '' }}"
@@ -29,4 +28,3 @@
         <input type="text" class="form-control" name="representative" value="{{ $data->representative ?? '' }}"
             placeholder="Nhập tên người đại diện">
     </div>
-</form>

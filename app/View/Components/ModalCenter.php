@@ -13,11 +13,13 @@ class ModalCenter extends Component
      * Create a new component instance.
      */
     public $title;
+    public $size;
 
-    public function __construct($title)
+    public function __construct($title, $size = null)
     {
         //
         $this->title = $title;
+        $this->size = $size;
     }
 
     /** 

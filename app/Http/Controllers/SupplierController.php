@@ -23,7 +23,9 @@ class SupplierController extends Controller
     public function index(Request $request) {
         if ($request->ajax()) {
             $data = $this->supplier->query();
-            return DataTables::of($data)->make(true);
+            return DataTables::of($data)
+                    ->addColumn('actions', ['edit', 'delete'])
+                    ->make(true);
         }
 
         return view('main.suppliers');

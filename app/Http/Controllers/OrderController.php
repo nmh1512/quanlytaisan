@@ -4,32 +4,48 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\OrderRequest;
 use App\Models\Order;
+use App\Models\User;
+use App\Notifications\OrderCreated;
 use App\Traits\QueryableTrait;
 use Illuminate\Http\Request;
 use DataTables;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
 
 class OrderController extends Controller
 {
     //
     use QueryableTrait;
     private $order;
-    public function __construct(Order $order)
+    private $user;
+    public function __construct(Order $order, User $user)
     {
         $this->order = $order;
+        $this->user = $user;
     }
     public function index(Request $request) {
         if ($request->ajax()) {
             $data = $this->order->with(['supplier', 'userCreated']);
+            
             return DataTables::of($data)
-                    ->addColumn('actions', ['edit', 'delete'])
+                    ->addColumn('actions', function($order) use ($request) {
+                        $actionsColumn = [];
+                        if($request->user()->can('update', $order)) {
+                            $actionsColumn[] = 'edit';
+                        }
+                        if($request->user()->can('delete', $order)) {
+                            $actionsColumn[] = 'delete';
+                        }
+                        return $actionsColumn;
+                    })
                     ->make(true);
         }
         return view('main.orders');
     }
-    public function store(OrderRequest $request) {
+    public function create(OrderRequest $request) {
         try {
             DB::beginTransaction();
             $dataInsert = [
@@ -58,6 +74,11 @@ class OrderController extends Controller
             }
             // tao chi tiet don hang gom cac chung loai tai san
             $order->typeAssetsInOrder()->attach($typeAssets);
+
+            //gui thong bao cho tong giam doc
+            $superAdmins = $this->user->role('Tổng giám đốc')->get();
+            $notification = new OrderCreated(Auth::user(), $order);
+            Notification::send($superAdmins, $notification);
 
             DB::commit();
             return response()->json([

@@ -7,7 +7,7 @@ $(function () {
             toastr.error("Đã có lỗi xảy ra");
             return false;
         }
-        $.get(route("get-type-assets", categoryAssetsId)).done((response) => {
+        $.get(route("home.get-type-assets", categoryAssetsId)).done((response) => {
             let html = "";
             if (response.data.length == 0) {
                 toastr.warning(

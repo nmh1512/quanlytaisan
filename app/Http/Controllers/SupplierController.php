@@ -23,8 +23,17 @@ class SupplierController extends Controller
     public function index(Request $request) {
         if ($request->ajax()) {
             $data = $this->supplier->query();
+
+            $actionsColumn = [];
+            if($request->user()->can('suppliers edit')) {
+                $actionsColumn[] = 'edit';
+            }
+            if($request->user()->can('suppliers delete')) {
+                $actionsColumn[] = 'delete';
+            }
+
             return DataTables::of($data)
-                    ->addColumn('actions', ['edit', 'delete'])
+                    ->addColumn('actions', $actionsColumn)
                     ->make(true);
         }
 

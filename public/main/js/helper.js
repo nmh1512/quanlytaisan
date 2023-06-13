@@ -4,6 +4,7 @@ function isEmpty(el) {
 }
 function getActionButtons(data) {
     var currentRoute = route().current();
+    currentRoute = currentRoute.replace('_index', '')
     var editRoute = `${currentRoute}_edit`;
     var deleteRoute = `${currentRoute}_delete`;
     var disableRoute = `${currentRoute}_disable`;

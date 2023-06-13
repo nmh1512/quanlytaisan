@@ -1,6 +1,6 @@
 $(document).ready(function () {
     let columnsData = {
-        category_assets: [
+        "home.category_assets_index": [
             {
                 data: "id",
                 name: "id",
@@ -22,7 +22,7 @@ $(document).ready(function () {
                 name: "updated_at",
             },
         ],
-        type_assets: [
+        "home.type_assets_index": [
             {
                 data: "id",
                 name: "id",
@@ -87,7 +87,7 @@ $(document).ready(function () {
                 responsivePriority: 3,
             },
         ],
-        suppliers: [
+        "home.suppliers_index": [
             {
                 data: "id",
                 name: "id",
@@ -113,7 +113,7 @@ $(document).ready(function () {
                 name: "representative",
             },
         ],
-        orders: [
+        "home.orders_index": [
             {
                 data: "id",
                 name: "id",
@@ -151,7 +151,7 @@ $(document).ready(function () {
                 name: "created_at",
             },
         ],
-        users: [
+        "home.users_index": [
             {
                 data: "id",
                 name: "id",
@@ -163,6 +163,16 @@ $(document).ready(function () {
             {
                 data: "email",
                 name: "email",
+            },
+            {
+                data: null,
+                name: "",
+                orderable: false,
+                searchable: false,
+                render: function(data) {
+                    var container = $("<div></div>");
+                    return container.html(data.select_role).text();
+                }
             },
             {
                 data: "created_at",
@@ -188,7 +198,7 @@ $(document).ready(function () {
                 },
             },
         ],
-        roles: [
+        "home.roles_index": [
             {
                 data: "id",
                 name: "id",
@@ -212,7 +222,17 @@ $(document).ready(function () {
     var table = $("#data-table").DataTable({
         processing: true,
         serverSide: true,
-        ajax: route(currentRoute),
+        ajax: {
+            type: 'GET',
+            url: route(currentRoute),
+            complete: function () {
+                $('.select-roles').select2({
+                    theme: "bootstrap",
+                    width: '100%'
+                    
+                });
+            }    
+        },
         columns: [
             ...columnsData[currentRoute],
             {
@@ -220,6 +240,7 @@ $(document).ready(function () {
                 orderable: false,
                 searchable: false,
                 responsivePriority: 1,
+                defaultContent: "",
                 render: function (data, type, row) {
                     return getActionButtons(data);
                 },
@@ -285,7 +306,7 @@ $(document).ready(function () {
                 data.id = id;
             }
            
-            $.get(route("form-data"), data)
+            $.get(route("home.form-data"), data)
                 .done(function (response) {
                     modal.find(".modal-body").html(response.data);
                     $("form select.form-control").select2({
@@ -337,8 +358,8 @@ $(document).ready(function () {
         e.preventDefault();
         if (!isRequest) {
             let $this = $(this);
-            // isRequest = true;
-            // $this.prop("disabled", true);
+            isRequest = true;
+            $this.prop("disabled", true);
 
             let urlRequest = $this.attr("data-href");
             let csrfToken = $('meta[name="csrf-token"]').attr("content");
@@ -357,6 +378,10 @@ $(document).ready(function () {
                 contentType: false,
                 success: function (response) {
                     if (response.status == "success") {
+                        if(route().current() == 'home.roles_index') {
+                            window.location.reload();
+                            return;
+                        }
                         toastr.success(
                             `${modalTitle} loại tài sản thành công.`
                         );
@@ -366,6 +391,7 @@ $(document).ready(function () {
                         $("span.title").empty();
                         $(".is-invalid").removeClass("is-invalid");
                         table.ajax.reload();
+                        
                     }
                 },
                 error: function (response) {
@@ -418,4 +444,6 @@ $(document).ready(function () {
         var character = String.fromCharCode(event.keyCode);
         return /[0-9\s]/.test(character);
     });
+
+  
 });

@@ -28,8 +28,17 @@ class CategoryAssetsController extends Controller
     {
         if($request->ajax()) {
             $data = $this->categoryAssets->with('userCreated');
+
+            $actionsColumn = [];
+            if($request->user()->can('category assets edit')) {
+                $actionsColumn[] = 'edit';
+            }
+            if($request->user()->can('category assets delete')) {
+                $actionsColumn[] = 'delete';
+            }
+
             return DataTables::of($data)
-                    ->addColumn('actions', ['edit', 'delete'])
+                    ->addColumn('actions', $actionsColumn)
                     ->make(true);
         }
         // render data vào bảng danh mục

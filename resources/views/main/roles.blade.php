@@ -29,13 +29,15 @@
         <section class="content">
             <div class="container-fluid">
                 <div class="row">
+                    @can('roles create')
                     <div class="col-12">
-                        <button data-href="{{ route('roles_create') }}" title="Thêm" type="button"
+                        <button data-href="{{ route('home.roles_create') }}" title="Thêm" type="button"
                             class="btn btn-primary float-right mb-3" data-toggle="modal" data-modal-type="add"
                             data-target="#modalCenter">
                             <i class="fas fa-plus" style="color: #ffffff;"></i></i> Thêm mới
                         </button>
                     </div>
+                    @endcan
                     <div class="col-12">
                         <div class="card">
                             <!-- /.card-header -->
@@ -64,10 +66,19 @@
         <!-- /.content -->
     </div>
     <!-- Form 1 -->
-    <x-modal-center :title="'Chức vụ'"></x-modal-center>
+    <x-modal-center :title="'Chức vụ'" :size="'size-lg'"></x-modal-center>
 @endsection
 @section('js')
     <script src="{{ asset('main/js/plugins/select2.min.js') }}"></script>
     <script src="{{ asset('home/plugins/toastr/toastr.min.js') }}"></script>
     <script src="{{ asset('main/js/app.js') }}"></script>
+
+
+    @if (session()->has('permissions_role'))
+        <script>
+            toastr.success(
+                '{{session('permissions_role')['message']}}'
+            );
+        </script>
+    @endif
 @endsection

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\TypeAssetsRequest;
 use App\Models\TypeAssets;
+use App\Traits\HasUserCreatedTrait;
 use App\Traits\QueryableTrait;
 use App\Traits\UploadFileTrait;
 use Illuminate\Http\Request;
@@ -16,8 +17,8 @@ use Illuminate\Support\Facades\Storage;
 class TypeAssetsController extends Controller
 {
     //
-    use UploadFileTrait;
-    use QueryableTrait;
+    use UploadFileTrait, QueryableTrait;
+    
     protected $typeAssets;
     public function __construct(TypeAssets $typeAssets)
     {
@@ -25,13 +26,21 @@ class TypeAssetsController extends Controller
     }
     public function index(Request $request)
     {
+        $data = $this->typeAssets;
         if ($request->ajax()) {
-            $data = $this->typeAssets;
-            return DataTables::of($data->with(['userCreated', 'categoryAsset']))
-                    ->addColumn('actions', ['edit', 'delete'])
-                    ->make(true);
-        }
 
+            $actionsColumn = [];
+            if($request->user()->can('type assets edit')) {
+                $actionsColumn[] = 'edit';
+            }
+            if($request->user()->can('type assets delete')) {
+                $actionsColumn[] = 'delete';
+            }
+
+            return DataTables::of($data->with(['userCreated', 'categoryAsset']))
+            ->addColumn('actions', $actionsColumn)
+            ->make(true);
+        }
         return view('main.type-assets');
     }
     public function create(TypeAssetsRequest $request)

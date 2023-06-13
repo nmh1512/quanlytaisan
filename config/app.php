@@ -170,8 +170,11 @@ return [
         App\Providers\RouteServiceProvider::class,
         Yajra\DataTables\DataTablesServiceProvider::class,
         Tightenco\Ziggy\ZiggyServiceProvider::class,
-        Intervention\Image\ImageServiceProvider::class
+        Intervention\Image\ImageServiceProvider::class,
+        Spatie\Permission\PermissionServiceProvider::class,
 
+        //View Composers
+        App\Providers\ViewComposers\NotificationServiceProvider::class
 
     ])->toArray(),
 

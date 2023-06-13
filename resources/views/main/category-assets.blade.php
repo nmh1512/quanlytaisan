@@ -29,13 +29,15 @@
         <section class="content">
             <div class="container-fluid">
                 <div class="row">
+                    @can('category assets create')
                     <div class="col-12">
-                        <button data-href="{{ route('category_assets_create') }}" title="Thêm" type="button"
+                        <button data-href="{{ route('home.category_assets_create') }}" title="Thêm" type="button"
                             class="btn btn-primary float-right mb-3" data-toggle="modal" data-modal-type="add"
                             data-target="#modalCenter">
                             <i class="fas fa-plus" style="color: #ffffff;"></i></i> Thêm mới
                         </button>
                     </div>
+                    @endcan
                     <div class="col-12">
                         <div class="card">
                             <!-- /.card-header -->

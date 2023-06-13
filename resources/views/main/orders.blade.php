@@ -1,7 +1,6 @@
 @extends('layouts.master')
 
 @section('css')
-<link rel="stylesheet" href="{{ asset('main/css/app.css') }}">
 <link rel="stylesheet" href="{{ asset('main/css/plugins/select2-bootstrap.min.css') }}">
 <link rel="stylesheet" href="{{ asset('main/css/plugins/select2.min.css') }}">
 <link rel="stylesheet" href="{{ asset('home/plugins/toastr/toastr.min.css') }}">
@@ -35,13 +34,15 @@
         <section class="content">
             <div class="container-fluid">
                 <div class="row">
+                    @can('orders create')
                     <div class="col-12">
-                        <button data-href="{{ route('orders_create') }}" title="Trình duyệt" type="button"
+                        <button data-href="{{ route('home.orders_create') }}" title="Trình duyệt" type="button"
                             class="btn btn-primary float-right mb-3" data-toggle="modal" data-modal-type="add"
                             data-target="#modalCenter">
                             <i class="fas fa-plus" style="color: #ffffff;"></i></i> Thêm mới
                         </button>
                     </div>
+                    @endcan
                     <div class="col-12">
                         <div class="card">
                             <!-- /.card-header -->

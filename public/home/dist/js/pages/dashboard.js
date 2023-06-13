@@ -264,4 +264,10 @@ $(function () {
     data: salesGraphChartData,
     options: salesGraphChartOptions
   })
+  $(document).on('click', '.language-change', function () { 
+      let language = $(this).data('lang')
+      $.get(route('home.change-language', language)).done((response) => {
+        console.log(response);
+      })
+  })
 })

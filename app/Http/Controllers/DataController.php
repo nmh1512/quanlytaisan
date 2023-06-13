@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 
 class DataController extends Controller
 {
@@ -64,5 +65,14 @@ class DataController extends Controller
             'status' => 'success',
             'data' => $data
         ]);
+    }
+
+    public function changeLanguage($language) {
+        // $language = config('app.locale');
+        // $language = $lang;
+        Session::put('language', $language);
+        return response()->json([
+            'status' => 'success',
+        ]); 
     }
 }

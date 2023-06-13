@@ -23,12 +23,23 @@ class UserController extends Controller
     }
     public function index(Request $request) {
         if ($request->ajax()) {
-            $data = $this->user->query();
-            return DataTables::of($data)
-                ->addColumn('actions', ['disable','delete'])
+            $data = $this->user;
+
+            $actionsColumn = [];
+            if($request->user()->can('users disable')) {
+                $actionsColumn[] = 'disable';
+            }
+            if($request->user()->can('users edit')) {
+                $actionsColumn[] = 'edit';
+            }
+            if($request->user()->can('users delete')) {
+                $actionsColumn[] = 'delete';
+            }
+
+            return DataTables::of($data->with('roles'))
+                ->addColumn('actions', $actionsColumn)
                 ->make(true);
         }
-
         return view('main.users');
     }
     public function create(Request $request) {
@@ -73,6 +84,43 @@ class UserController extends Controller
 
 
     }
+
+    public function update(Request $request, User $user) {
+
+        $request->validate(
+            [
+                'name' => 'required|max:255',
+                'email' => 'required|email|unique:users,email,'. $user->id
+            ],
+            [
+                'name.required' => 'Vui lòng nhập tên người dùng',
+                'name.max' => 'Giới hạn :max ký tự',
+                'email.required' => 'Vui lòng nhập email',
+                'email.email' => 'Email không đúng định dạng',
+                'email.unique' => 'Email đã tồn tại trong hệ thống'
+            ]
+        );
+
+        try {
+            DB::beginTransaction();
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->save();
+            DB::commit();
+            return response()->json([
+                'status' => 'success'
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::error("Error ". $e->getMessage(). ' at line '.$e->getLine());
+            return response()->json([
+                'status' => 'error'
+            ], 500);
+        }
+
+
+
+    }
     public function disable($id) {
         try {
             $user = $this->user->find($id);
@@ -91,4 +139,6 @@ class UserController extends Controller
     public function delete($id) {
         return $this->deleteData($this->user, $id);
     }
+
+  
 }

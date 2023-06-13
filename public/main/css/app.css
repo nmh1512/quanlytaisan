@@ -95,6 +95,19 @@ form
 table.dataTable > tbody > tr.child span.dtr-title {
     width: 200px;
 }
+#data-table_wrapper .select2-container .select2-selection--single {
+    height: 37px;
+}
+#data-table_wrapper .select2-container--bootstrap .select2-selection {
+    font-size: 1rem;
+}
+.grid-4-cols {
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+}
+.nav-item.dropdown .dropdown-menu .dropdown-item {
+    white-space: unset;
+}
 @media screen and (max-width: 480px) {
     #formData {
         display: block;

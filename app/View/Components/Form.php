@@ -6,6 +6,7 @@ use App\Models\CategoryAssets;
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Route;
 use Illuminate\View\Component;
 
 class Form extends Component
@@ -45,8 +46,10 @@ class Form extends Component
         $formContent = view('components.form.'. $this->formName, [
             'title' => $this->title,
             'data' => $this->data,
-            'selects' => $this->selects
+            'selects' => $this->selects,
+            'routes' => Route::getRoutes()->getRoutesByName('home.*')
         ])->render();
+
         return view('components.form.form', [
             'styleOfGrid' => $this->styleOfGrid,
             'formContent' => $formContent,

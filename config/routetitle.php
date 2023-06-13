@@ -2,20 +2,20 @@
 
 use App\Models\CategoryAssets;
 use App\Models\Order;
-use App\Models\Role;
 use App\Models\Supplier;
 use App\Models\TypeAssets;
 use App\Models\User;
 use Illuminate\Support\Facades\Cache;
+use Spatie\Permission\Models\Role;
 
 return [
     'config' => [
-        'category_assets' => [
+        'home.category_assets_index' => [
             'model' => CategoryAssets::class,
             'title' => 'Loại tài sản',
             'form_data' => 'form-category-assets'
         ],
-        'type_assets' => [
+        'home.type_assets_index' => [
             'model' => TypeAssets::class,
             'title' => 'Chủng loại tài sản',
             'form_data' => 'form-type-assets',
@@ -26,12 +26,12 @@ return [
                 'years' => getYears()
             ]
         ],
-        'suppliers' => [
+        'home.suppliers_index' => [
             'model' => Supplier::class,
             'title' => 'Nhà cung cấp',
             'form_data' => 'form-suppliers',
         ],
-        'orders' => [
+        'home.orders_index' => [
             'model' => Order::class,
             'title' => 'Đơn đặt hàng',
             'form_data' => 'form-order',
@@ -54,12 +54,12 @@ return [
             ],
             'grid' => 'three-row'
         ],
-        'users' => [
+        'home.users_index' => [
             'model' => User::class,
             'title' => 'Người dùng',
             'form_data' => 'form-users',
         ],
-        'roles' => [
+        'home.roles_index' => [
             'model' => Role::class,
             'title' => 'Chức vụ',
             'form_data' => 'form-roles'

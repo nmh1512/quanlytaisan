@@ -26,10 +26,10 @@ function getActionButtons(data) {
         },
         disable: {
             route: Ziggy.routes.hasOwnProperty(disableRoute) ? route(disableRoute, data.id) : '',
-            title: data.status == 1 ? "Vô hiệu hóa" : "Kích hoạt",
+            title: data.status == 'ACTIVE' ? "Vô hiệu hóa" : "Kích hoạt",
             style: "btn-warning",
-            icon: data.status == 1 ? '<i class="fas fa-lock"></i>' : '<i class="fas fa-lock-open"></i>',
-            action: data.status == 1 ? 'disable' : 'enable'
+            icon: data.status == 'ACTIVE' ? '<i class="fas fa-lock"></i>' : '<i class="fas fa-lock-open"></i>',
+            action: data.status == 'ACTIVE' ? 'disable' : 'enable'
 
         },
     };

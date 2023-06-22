@@ -39,8 +39,9 @@ class DataController extends Controller
                     'model' => $data
                 ];
                 // check neu ko co action xoa thi noi dung cua modal se la xoa
-                if (!empty($action) && ($action == 'delete' || $action == 'disable' || $action == 'enable')) {
-                    $dataConfig['form_data'] = $action;
+                if (!empty($action) && $action != 'edit') {
+                    $dataConfig['form_data'] = '';
+                    $dataConfig['action'] = $action;
                 }
                 // lay form data tu component
                 $formData = new Form(...$dataConfig);

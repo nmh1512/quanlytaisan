@@ -22,7 +22,7 @@ class OrderCreated extends Notification implements ShouldQueue
         //
         $this->user = $user;
         $this->message = 'Đơn hàng <span style="font-weight: bold">'.$order->code.'</span> đã được lập bởi <span style="font-weight: bold">'.$user->name.'</span>. Vui lòng xác nhận';
-        $this->link = url('/orders');
+        $this->link = route('home.order_detail', $order->id);
     }
 
     /**

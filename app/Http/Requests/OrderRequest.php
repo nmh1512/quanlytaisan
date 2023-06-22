@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Order;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Validation\Rule;
@@ -26,6 +27,7 @@ class OrderRequest extends FormRequest
         return [
             //
             // 'code' => 'required|max:255|unique:orders,code,'. $this->route('id'),
+
             'code' => [
                 'required',
                 'max:255',
@@ -44,6 +46,7 @@ class OrderRequest extends FormRequest
     public function attributes(): array
     {
         return [
+            'id' => 'Id',
             'code' => 'Mã đơn hàng',
             'supplier_id' => 'Nhà cung cấp',
             'order_date' => 'Ngày đặt hàng',
@@ -62,6 +65,8 @@ class OrderRequest extends FormRequest
         $error = 'Có lỗi xảy ra';
         $numeric = 'Vui lòng nhập số';
         return [
+            'id.exists' => ':attribute không tồn tại',
+
             'code.required' => $required,
             'code.unique' => ':attribute này đã tồn tại',
             'code.max' => $max,

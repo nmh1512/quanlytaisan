@@ -71,4 +71,6 @@
 <script src="{{ asset('home/dist/js/pages/dashboard.js') }}"></script>
 @routes()
 <script src="{{ asset('main/js/helper.js') }}"></script>
+<script src="{{ asset('main/js/main.js') }}"></script>
+
 @yield('js')

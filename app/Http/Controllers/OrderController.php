@@ -14,17 +14,19 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
-
+use App\Repositories\Order\OrderRepositoryInterface;
 class OrderController extends Controller
 {
     //
     use QueryableTrait;
     private $order;
     private $user;
-    public function __construct(Order $order, User $user)
+    private $orderRepo;
+    public function __construct(OrderRepositoryInterface $orderRepo, Order $order, User $user)
     {
         $this->order = $order;
         $this->user = $user;
+        $this->orderRepo = $orderRepo;
     }
     public function index(Request $request) {
         if ($request->ajax()) {
@@ -45,9 +47,12 @@ class OrderController extends Controller
         }
         return view('main.orders');
     }
+    public function show($id) {
+        $order = $this->orderRepo->orderDetail($id);
+        return view('main.order-detail', compact('order'));
+    }
     public function create(OrderRequest $request) {
         try {
-            DB::beginTransaction();
             $dataInsert = [
                 'code' => $request->code,
                 'supplier_id' => $request->supplier_id,
@@ -57,28 +62,31 @@ class OrderController extends Controller
                 'payment_methods' => $request->payment_methods,
                 'user_create' => auth()->id()
             ];
-            // tao don hang
-            $order = $this->order->create($dataInsert);
-            
+
             $typeAssetsId = $request->type_asset_id;
             $prices = $request->price;
             $quantities = $request->quantity;
             
             //tao 1 mang chua thong tin cua chung loai tai san
             $typeAssets = [];
-            foreach($typeAssetsId as $id => $item) {
+            foreach($typeAssetsId as $index => $item) {
                 $typeAssets[$item] = [
-                    'price' => $prices[$id],
-                    'quantity' => $quantities[$id],
+                    'price' => $prices[$index],
+                    'quantity' => $quantities[$index],
                 ];
             }
+            DB::beginTransaction();
+            // tao don hang
+            $order = $this->orderRepo->create($dataInsert);
             // tao chi tiet don hang gom cac chung loai tai san
             $order->typeAssetsInOrder()->attach($typeAssets);
+            //gui thong bao cho nguoi co quyen duyet
+            $userReview = $this->user->permission('orders review')->get();
 
-            //gui thong bao cho tong giam doc
-            $superAdmins = $this->user->role('Tổng giám đốc')->get();
-            $notification = new OrderCreated(Auth::user(), $order);
-            Notification::send($superAdmins, $notification);
+            if(!empty($userReview)) {
+                $notification = new OrderCreated(Auth::user(), $order);
+                Notification::send($userReview, $notification);
+            }
 
             DB::commit();
             return response()->json([
@@ -95,7 +103,6 @@ class OrderController extends Controller
 
     public function update(OrderRequest $request, $id) {
         try {
-            DB::beginTransaction();
             $dataUpdate = [
                 'code' => $request->code,
                 'supplier_id' => $request->supplier_id,
@@ -105,22 +112,21 @@ class OrderController extends Controller
                 'payment_methods' => $request->payment_methods,
                 'user_create' => auth()->id()
             ];
-            // tao don hang
-            $order = $this->order->find($id);
-            $order->update($dataUpdate);
-
             $typeAssetsId = $request->type_asset_id;
             $prices = $request->price;
             $quantities = $request->quantity;
             
             //tao 1 mang chua thong tin cua chung loai tai san
             $typeAssets = [];
-            foreach($typeAssetsId as $id => $item) {
+            foreach($typeAssetsId as $index => $item) {
                 $typeAssets[$item] = [
-                    'price' => $prices[$id],
-                    'quantity' => $quantities[$id],
+                    'price' => $prices[$index],
+                    'quantity' => $quantities[$index],
                 ];
             }
+            // tao don hang
+            DB::beginTransaction();
+            $order = $this->orderRepo->update($id, $dataUpdate);
             // tao chi tiet don hang gom cac chung loai tai san
             $order->typeAssetsInOrder()->sync($typeAssets);
 
@@ -139,6 +145,31 @@ class OrderController extends Controller
 
     public function destroy($id) {
         return $this->deleteData($this->order, $id);
-       
+    }
+
+    public function review(Request $request, $id) {
+        try {
+            $status = $request->order_review;
+            $order = $this->orderRepo->find($id);
+            if(!empty($status)) {
+                if($status == 'reject') {
+                    $order->status = 'CREATED';
+                } else {
+                    $order->status = strtoupper($status);
+                }
+                $order->save();
+                return response()->json([
+                    'status' => 'success'
+                ]);
+            } 
+            return response()->json([
+                'status' => 'error'
+            ], 500);
+        } catch (Exception $e) {
+            Log::error('Error: '.$e->getMessage().' at line '.$e->getLine());
+            return response()->json([
+                'status' => 'error'
+            ],500);
+        }
     }
 }

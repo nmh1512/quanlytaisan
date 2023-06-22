@@ -125,7 +125,7 @@
                  @if ($notifications['unread']->count() != 0)
                     @foreach ($notifications['list'] as $notification)
                     <a href="{{ $notification->data['link'] }}" class="dropdown-item">
-                        <i class="fas fa-clipboard-list mr-2"></i> {{ $notification->data['message'] }}
+                        <i class="fas fa-clipboard-list mr-2"></i> {!! $notification->data['message'] !!}
                         <span class="d-block text-right text-muted text-sm">{{ $notification->created_at }}</span>
                     </a>
                     <div class="dropdown-divider"></div>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\AdminCreatedUser;
 use App\Models\User;
+use App\Repositories\User\UserRepositoryInterface;
 use App\Traits\QueryableTrait;
 use Illuminate\Http\Request;
 use DataTables;
@@ -15,11 +16,13 @@ use Illuminate\Support\Facades\Log;
 class UserController extends Controller
 {
     //
-    private $user;
     use QueryableTrait;
-    public function __construct(User $user)
+    private $user;
+    private $userRepo;
+    public function __construct(UserRepositoryInterface $userRepo, User $user)
     {   
         $this->user = $user;
+        $this->userRepo = $userRepo;
     }
     public function index(Request $request) {
         if ($request->ajax()) {
@@ -59,10 +62,10 @@ class UserController extends Controller
         );
 
         try {
-            DB::beginTransaction();
             $email = $request->email;
             $password = str_random(8);
-            $this->user->create([
+            DB::beginTransaction();
+            $this->userRepo->create([
                 'name' => $request->name,
                 'email' => $email,
                 'password' => Hash::make($password)
@@ -80,17 +83,14 @@ class UserController extends Controller
                 'status' => 'error'
             ], 500);
         }
-
-
-
     }
 
-    public function update(Request $request, User $user) {
+    public function update(Request $request, $id) {
 
         $request->validate(
             [
                 'name' => 'required|max:255',
-                'email' => 'required|email|unique:users,email,'. $user->id
+                'email' => 'required|email|unique:users,email,'. $id
             ],
             [
                 'name.required' => 'Vui lòng nhập tên người dùng',
@@ -103,9 +103,11 @@ class UserController extends Controller
 
         try {
             DB::beginTransaction();
-            $user->name = $request->name;
-            $user->email = $request->email;
-            $user->save();
+            $dataUpdate = [
+                'name' => $request->name,
+                'email' => $request->email
+            ];
+            $this->userRepo->update($id, $dataUpdate);
             DB::commit();
             return response()->json([
                 'status' => 'success'
@@ -117,14 +119,11 @@ class UserController extends Controller
                 'status' => 'error'
             ], 500);
         }
-
-
-
     }
     public function disable($id) {
         try {
-            $user = $this->user->find($id);
-            $user->status = !$user->status;
+            $user = $this->userRepo->find($id);
+            $user->status = $user->status == 'ACTIVE' ? 'INACTIVE' : 'ACTIVE';
             $user->save();
             
             return response()->json([

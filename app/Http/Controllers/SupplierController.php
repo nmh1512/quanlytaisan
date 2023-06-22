@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\SupplierRequest;
 use App\Models\Supplier;
+use App\Repositories\Supplier\SupplierRepositoryInterface;
 use App\Traits\QueryableTrait;
 use Illuminate\Http\Request;
 use DataTables;
@@ -16,8 +17,10 @@ class SupplierController extends Controller
     //
     use QueryableTrait;
     private $supplier;
-    public function __construct(Supplier $supplier)
+    private $supplierRepo;
+    public function __construct(SupplierRepositoryInterface $supplierRepo , Supplier $supplier)
     {
+        $this->supplierRepo = $supplierRepo;
         $this->supplier = $supplier;
     }
     public function index(Request $request) {
@@ -41,7 +44,6 @@ class SupplierController extends Controller
     }
     public function create(SupplierRequest $request) {
         try {
-            DB::beginTransaction();
             $dataInsert = [
                 'name' => $request->name,
                 'address' => $request->address,
@@ -49,7 +51,8 @@ class SupplierController extends Controller
                 'tax_code' => $request->tax_code,
                 'representative' => $request->representative,
             ];
-            $this->supplier->create($dataInsert);
+            DB::beginTransaction();
+            $this->supplierRepo->create($dataInsert);
             DB::commit();
             return response()->json([
                 'status' => 'success'
@@ -65,7 +68,6 @@ class SupplierController extends Controller
 
     public function update(SupplierRequest $request, $id) {
         try {
-            DB::beginTransaction();
             $dataUpdate = [
                 'name' => $request->name,
                 'address' => $request->address,
@@ -73,7 +75,8 @@ class SupplierController extends Controller
                 'tax_code' => $request->tax_code,
                 'representative' => $request->representative,
             ];
-            $this->supplier->find($id)->update($dataUpdate);
+            DB::beginTransaction();
+            $this->supplierRepo->update($id, $dataUpdate);
             DB::commit();
             return response()->json([
                 'status' => 'success'

@@ -20,7 +20,8 @@ class Form extends Component
     public $selects;
     public $formContent;
     public $styleOfGrid;
-    
+    public $action;
+
     public function __construct(...$data)
     {
         //
@@ -29,6 +30,7 @@ class Form extends Component
         $this->formName = $data['form_data'];
         $this->selects = $data['selectFeilds'] ?? [];
         $this->styleOfGrid = $data['grid'] ?? '';
+        $this->action = $data['action'] ?? '';
     }
 
     /**
@@ -36,9 +38,10 @@ class Form extends Component
      */
     public function render(): View|Closure|string
     {
-        if($this->formName == 'delete' || $this->formName == 'disable' || $this->formName == 'enable') {
+        if(!empty($this->action) && $this->action != 'edit') {
+            $text = config('params.actions')[$this->action] ?? '';
             return view('components.delete', [
-                'text' => $this->formName == 'delete' ? 'xóa' : ($this->formName == 'disable' ? 'vô hiệu hóa' : 'kích hoạt'),
+                'text' => $text,
                 'title' => $this->title,
                 'name' => $this->data->name ?? $this->data->code
             ]);
@@ -49,7 +52,6 @@ class Form extends Component
             'selects' => $this->selects,
             'routes' => Route::getRoutes()->getRoutesByName('home.*')
         ])->render();
-
         return view('components.form.form', [
             'styleOfGrid' => $this->styleOfGrid,
             'formContent' => $formContent,

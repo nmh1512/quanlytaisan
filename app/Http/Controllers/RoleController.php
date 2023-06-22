@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Repositories\Role\RoleRepositoryInterface;
 use Spatie\Permission\Models\Role;
 use Illuminate\Http\Request;
 use DataTables;
@@ -15,9 +16,11 @@ class RoleController extends Controller
 {
     //
     private $role;
-    public function __construct(Role $role)
+    private $roleRepo;
+    public function __construct(RoleRepositoryInterface $roleRepo, Role $role)
     {
         $this->role = $role;
+        $this->roleRepo = $roleRepo;
     }
 
     public function index(Request $request) {
@@ -39,13 +42,12 @@ class RoleController extends Controller
 
     public function create(Request $request) {
         try {
-            DB::beginTransaction();
             $dataInsert = [
                 'name' => $request->name,
             ];
+            DB::beginTransaction();
             // tao don hang
-            $this->role->create($dataInsert);
-            
+            $this->roleRepo->create($dataInsert);
             DB::commit();
             return response()->json([
                 'status' => 'success'
@@ -62,7 +64,7 @@ class RoleController extends Controller
     public function update(Request $request, Role $role) {
         try {
             DB::beginTransaction();
-            $role->name = $request->name;
+            $role->name = $request->name;   
             $permissions = $request->permissions;
 
             if(!empty($permissions)) {
@@ -94,7 +96,7 @@ class RoleController extends Controller
     public function setRole(Request $request, User $user) {
 
         try {
-            $role = Role::findOrFail($request->role_id);
+            $role = $this->roleRepo->find($request->role_id);
             $user->syncRoles($role);
             return response()->json([
                 'status' => 'success'

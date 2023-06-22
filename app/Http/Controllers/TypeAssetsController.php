@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\TypeAssetsRequest;
 use App\Models\TypeAssets;
-use App\Traits\HasUserCreatedTrait;
+use App\Repositories\TypeAssets\TypeAssetsRepositoryInterface;
 use App\Traits\QueryableTrait;
 use App\Traits\UploadFileTrait;
 use Illuminate\Http\Request;
@@ -12,7 +12,6 @@ use DataTables;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 
 class TypeAssetsController extends Controller
 {
@@ -20,15 +19,17 @@ class TypeAssetsController extends Controller
     use UploadFileTrait, QueryableTrait;
     
     protected $typeAssets;
-    public function __construct(TypeAssets $typeAssets)
+    private $typeAssetsRepo;
+    public function __construct(TypeAssetsRepositoryInterface $typeAssetsRepo, TypeAssets $typeAssets)
     {
         $this->typeAssets = $typeAssets;
+        $this->typeAssetsRepo = $typeAssetsRepo;
     }
     public function index(Request $request)
     {
-        $data = $this->typeAssets;
         if ($request->ajax()) {
 
+            $data = $this->typeAssets;
             $actionsColumn = [];
             if($request->user()->can('type assets edit')) {
                 $actionsColumn[] = 'edit';
@@ -46,7 +47,6 @@ class TypeAssetsController extends Controller
     public function create(TypeAssetsRequest $request)
     {
         try {
-            DB::beginTransaction();
             $dataInsert = [
                 'name' => $request->name,
                 'category_asset_id' => $request->category_asset_id,
@@ -62,7 +62,8 @@ class TypeAssetsController extends Controller
                 $dataInsert['image'] = $file['file_path'];
                 $dataInsert['image_origin_name'] = $file['file_name'];
             }
-            $this->typeAssets->create($dataInsert);
+            DB::beginTransaction();
+            $this->typeAssetsRepo->create($dataInsert);
             DB::commit();
             return response()->json([
                 'status' => 'success'
@@ -79,7 +80,6 @@ class TypeAssetsController extends Controller
     public function update(TypeAssetsRequest $request, $id)
     {
         try {
-            DB::beginTransaction();
             $dataUpdate = [
                 'name' => $request->name,
                 'category_asset_id' => $request->category_asset_id,
@@ -99,7 +99,8 @@ class TypeAssetsController extends Controller
                     $dataUpdate['image_origin_name'] = '';
                 }
             }
-            $this->typeAssets->find($id)->update($dataUpdate);
+            DB::beginTransaction();
+            $this->typeAssetsRepo->update($dataUpdate);
             DB::commit();
             return response()->json([
                 'status' => 'success'

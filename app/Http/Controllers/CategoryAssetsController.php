@@ -5,10 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CategoryAssetsRequest;
 use App\Models\CategoryAssets;
 use App\Models\User;
+use App\Repositories\CategoryAssets\CategoryAssetsRepositoryInterface;
 use App\Traits\QueryableTrait;
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -19,10 +19,11 @@ class CategoryAssetsController extends Controller
     //
     use QueryableTrait;
     protected $categoryAssets;
-
-    public function __construct(CategoryAssets $categoryAssets)
+    private $categoryAssetsRepo;
+    public function __construct(CategoryAssetsRepositoryInterface $categoryAssetsRepo, CategoryAssets $categoryAssets)
     {
         $this->categoryAssets = $categoryAssets;
+        $this->categoryAssetsRepo = $categoryAssetsRepo;
     }
     public function index(Request $request)
     {
@@ -48,14 +49,12 @@ class CategoryAssetsController extends Controller
     public function create(CategoryAssetsRequest $request)
     {
         try {
-            DB::beginTransaction();
-
             $dataInsert = [
                 'name' => $request->name,
                 'user_create' => Auth::user()->id
             ];
-            $this->categoryAssets->create($dataInsert);
-
+            DB::beginTransaction();
+            $this->categoryAssetsRepo->create($dataInsert);
             DB::commit();
 
             //render lai table
@@ -78,21 +77,15 @@ class CategoryAssetsController extends Controller
     public function update(CategoryAssetsRequest $request, $id)
     {
         try {
-            DB::beginTransaction();
-
             $dataUpdate = [
                 'name' => $request->name,
             ];
-            $this->categoryAssets->find($id)->update($dataUpdate);
-
+            DB::beginTransaction();
+            $this->categoryAssetsRepo->update($dataUpdate);
             DB::commit();
-
             //render lai table
-            // $tableReRender = $this->reRenderData();
-
             return response()->json([
                 'status' => 'success',
-                // 'table' => $tableReRender
             ]);
         } catch (Exception $e) {
             DB::rollBack();

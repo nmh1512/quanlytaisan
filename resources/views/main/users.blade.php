@@ -76,5 +76,6 @@
     <script src="{{ asset('home/plugins/toastr/toastr.min.js') }}"></script>
     <script src="{{ asset('main/js/app.js') }}"></script>
     <script src="{{ asset('main/js/user.js') }}"></script>
+    <script src="{{ asset('main/js/request.js') }}"></script>
 
 @endsection

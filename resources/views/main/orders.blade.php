@@ -84,5 +84,6 @@
     <script src="{{ asset('main/js/plugins/bootstrap-multiselect.min.js') }}"></script>
     <script src="{{ asset('main/js/app.js') }}"></script>
     <script src="{{ asset('main/js/order.js') }}"></script>
+    <script src="{{ asset('main/js/request.js') }}"></script>
 
 @endsection

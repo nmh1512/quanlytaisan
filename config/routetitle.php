@@ -54,6 +54,11 @@ return [
             ],
             'grid' => 'three-row'
         ],
+        'home.order_detail' => [
+            'model' => Order::class,
+            'title' => 'Đơn đặt hàng',
+            // 'form_data' => 'form-order-detail',
+        ],
         'home.users_index' => [
             'model' => User::class,
             'title' => 'Người dùng',

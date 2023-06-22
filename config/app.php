@@ -172,11 +172,15 @@ return [
         Tightenco\Ziggy\ZiggyServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
         Spatie\Permission\PermissionServiceProvider::class,
-
         //View Composers
-        App\Providers\ViewComposers\NotificationServiceProvider::class
+        App\Providers\ViewComposers\NotificationServiceProvider::class,
+        
+        //Repository
+        App\Providers\RepositoryServiceProvider::class,
 
-    ])->toArray(),
+        //Socialite
+        Laravel\Socialite\SocialiteServiceProvider::class,
+        ])->toArray(),
 
     /*
     |--------------------------------------------------------------------------
@@ -192,7 +196,8 @@ return [
     'aliases' => Facade::defaultAliases()->merge([
         // 'Example' => App\Facades\Example::class,
         'DataTables' => Yajra\DataTables\Facades\DataTables::class,
-        'Image' => Intervention\Image\Facades\Image::class
+        'Image' => Intervention\Image\Facades\Image::class,
+        'Socialite' => Laravel\Socialite\Facades\Socialite::class,
     ])->toArray(),
 
 ];

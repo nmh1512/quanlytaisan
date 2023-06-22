@@ -13,7 +13,11 @@ return [
         'create' => 'Thêm',
         'edit' => 'Sửa',
         'delete' => 'Xóa',
-        'disable' => 'Vô hiệu hóa'
+        'disable' => 'Vô hiệu hóa',
+        'enable' => 'Kích hoạt',
+        'review' => 'Duyệt',
+        'accept' => 'Duyệt',
+        'reject' => 'Từ chối'
     ]
 ]
 

@@ -4,6 +4,7 @@ use App\Http\Controllers\CategoryAssetsController;
 use App\Http\Controllers\DataController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\SocialAuthController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\TypeAssetsController;
 use App\Http\Controllers\UserController;
@@ -26,7 +27,12 @@ Auth::routes();
 
 // Route::post('/login', [UserController::class, 'postLogin'])->name('login');
 
-Route::middleware('auth', 'localization')->name('home.')->group(function() {
+Route::namespace('Auth')->group(function () {
+    Route::get('social/{provider}/redirect', [SocialAuthController::class, 'redirect'])->name('social.login');
+    Route::get('social/{provider}/callback', [SocialAuthController::class, 'callback']);
+});
+
+Route::middleware('auth', 'localization', 'check_user_status')->name('home.')->group(function() {
     Route::get('/', function () {
         return view('index');
     });
@@ -63,11 +69,15 @@ Route::middleware('auth', 'localization')->name('home.')->group(function() {
     //supplier Routes
     Route::get('/orders', [OrderController::class, 'index'])->name('orders_index')->middleware('permission:orders view');
 
+    Route::get('/orders/{id}', [OrderController::class, 'show'])->name('order_detail')->middleware('permission:orders view');
+
     Route::post('/orders-create', [OrderController::class, 'create'])->name('orders_create');
 
     Route::post('/orders-edit/{id}', [OrderController::class, 'update'])->name('orders_edit');
 
     Route::post('/orders-delete/{id}', [OrderController::class, 'delete'])->name('orders_delete');
+
+    Route::post('/order-review/{id}/{type}', [OrderController::class, 'review'])->name('orders_review');
     // Route::resource('orders', OrderController::class)->except(['create', 'edit'])->names([
     //     'index' => 'orders',
     //     'store' => 'orders_create',
@@ -79,7 +89,7 @@ Route::middleware('auth', 'localization')->name('home.')->group(function() {
 
     Route::post('/users-create', [UserController::class, 'create'])->name('users_create');
 
-    Route::post('/users-edit/{user}', [UserController::class, 'update'])->name('users_edit');
+    Route::post('/users-edit/{id}', [UserController::class, 'update'])->name('users_edit');
 
     Route::post('/users-disable/{id}', [UserController::class, 'disable'])->name('users_disable');
 
@@ -103,5 +113,9 @@ Route::middleware('auth', 'localization')->name('home.')->group(function() {
     Route::get('/get-type-assets/{category_asset_id}', [DataController::class, 'getTypeAssets'])->name('get-type-assets');
 
     Route::get('/change-language/{language}', [DataController::class, 'changeLanguage'])->name('change-language');
+
+});
+Route::get('/policies-procedures', function() {
+    return '<h1>Chính sách riêng tư</h1>';
 });
 

@@ -1,9 +1,11 @@
 $(function() {
     $(document).on('change', '.select-roles', function () {
         let $this = $(this)
+        let roleId = $this.val()
+        if(roleId == null) return false
+
         let csrfToken = $('meta[name="csrf-token"]').attr("content");
         let userId = $this.attr('data-id')
-        let roleId = $this.val()
         $.ajax({
             type: 'POST',
             url: route('home.set-role', userId),

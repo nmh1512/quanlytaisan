@@ -12,17 +12,12 @@ trait QueryableTrait
     }
     public function deleteData($model, $id) {
         try {
-            DB::beginTransaction();
             $model->findOrFail($id)->delete();
-            DB::commit();
-
             return response()->json([
                 'status' => 'success',
             ]);
         } catch (Exception $e) {
-            DB::rollBack();
             Log::error("Error: " . $e->getMessage() . " at line: " . $e->getLine());
-
             return response()->json([
                 'status' => 'error'
             ], 500);
